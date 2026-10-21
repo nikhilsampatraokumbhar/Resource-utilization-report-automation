@@ -1,0 +1,1179 @@
+<title>Clockify Utilisation Flow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=JetBrains+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: sticky stage rail on the left (desktop), one reading column of numbered steps, each with an illustrated designer card and copy-ready formulas. */
+:root {
+  --bg: #f2f4f6;
+  --surface: #ffffff;
+  --surface-2: #eaeef2;
+  --ink: #17202b;
+  --muted: #566272;
+  --line: #d6dce4;
+  --accent: #0c6a64;
+  --accent-ink: #ffffff;
+  --accent-soft: #d9eeeb;
+  --code-bg: #f7f9fb;
+  --fx: #84329f;
+  --fx-soft: #f3e6f8;
+  --dyn: #1c5cb8;
+  --dyn-soft: #e4edfb;
+  --ok: #1d7a3b;
+  --warn: #965700;
+  --warn-soft: #fbefd9;
+  --bad: #b0261d;
+  --bad-soft: #fbe5e3;
+  --c-sched: #2563a8;
+  --c-data: #7346b0;
+  --c-var: #9a3a8f;
+  --c-ctrl: #4b5768;
+  --c-http: #a8501c;
+  --c-excel: #1b7442;
+  --c-teams: #4a51b8;
+  --shadow: 0 1px 2px rgba(15, 25, 40, .06), 0 6px 18px rgba(15, 25, 40, .06);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", "Cascadia Mono", Consolas, ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1318; --surface: #151c24; --surface-2: #1c2530; --ink: #e5eaf0; --muted: #9ba7b5; --line: #2a3542;
+    --accent: #45b9ae; --accent-ink: #062320; --accent-soft: #123835; --code-bg: #111820;
+    --fx: #d79cf2; --fx-soft: #2f1d3a; --dyn: #8db5f6; --dyn-soft: #182a46;
+    --ok: #74d394; --warn: #f1b85c; --warn-soft: #382811; --bad: #f2928a; --bad-soft: #3c1a18;
+    --c-sched: #3a7cc4; --c-data: #8a5fc9; --c-var: #b04fa4; --c-ctrl: #5e6b7e; --c-http: #c0662c; --c-excel: #23905a; --c-teams: #6067d0;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 18px rgba(0, 0, 0, .25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1318; --surface: #151c24; --surface-2: #1c2530; --ink: #e5eaf0; --muted: #9ba7b5; --line: #2a3542;
+  --accent: #45b9ae; --accent-ink: #062320; --accent-soft: #123835; --code-bg: #111820;
+  --fx: #d79cf2; --fx-soft: #2f1d3a; --dyn: #8db5f6; --dyn-soft: #182a46;
+  --ok: #74d394; --warn: #f1b85c; --warn-soft: #382811; --bad: #f2928a; --bad-soft: #3c1a18;
+  --c-sched: #3a7cc4; --c-data: #8a5fc9; --c-var: #b04fa4; --c-ctrl: #5e6b7e; --c-http: #c0662c; --c-excel: #23905a; --c-teams: #6067d0;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 6px 18px rgba(0, 0, 0, .25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 17px; line-height: 1.6; }
+h1, h2, h3, h4 { font-family: var(--f-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, kbd { font-family: var(--f-mono); font-size: .86em; }
+:not(pre) > code { background: var(--surface-2); border: 1px solid var(--line); border-radius: 5px; padding: .05em .35em; overflow-wrap: anywhere; }
+kbd { border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 0 .35em; background: var(--surface); }
+b, strong { font-weight: 700; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 40px 96px; display: grid; grid-template-columns: 232px minmax(0, 1fr); gap: 56px; }
+main { min-width: 0; max-width: 800px; display: grid; gap: 72px; }
+
+/* Rail */
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 28px); align-self: start; display: grid; gap: 18px; font-size: 15px; }
+.rail .brand { font-family: var(--f-display); font-weight: 700; font-size: 18px; line-height: 1.2; }
+.rail nav { display: grid; gap: 2px; }
+.rail nav a { display: grid; grid-template-columns: 26px 1fr; gap: 8px; align-items: baseline; text-decoration: none; color: var(--muted); padding: 6px 8px; border-radius: 8px; }
+.rail nav a:hover { background: var(--surface-2); color: var(--ink); }
+.rail nav a .k { font-family: var(--f-mono); font-size: 12px; color: var(--accent); }
+.progress { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 8px; }
+.progress .bar { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+.progress .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.progress small { color: var(--muted); font-size: 13px; }
+
+/* Hero */
+.hero { display: grid; gap: 22px; }
+.eyebrow { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.hero h1 { font-size: clamp(34px, 5vw, 52px); letter-spacing: -.01em; }
+.lede { font-size: 19px; color: var(--muted); max-width: 62ch; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: hidden; }
+.facts div { padding: 14px 16px; display: grid; gap: 2px; border-left: 1px solid var(--line); }
+.facts div:first-child { border-left: 0; }
+.facts dt { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.facts dd { margin: 0; font-weight: 700; font-size: 16px; }
+.note-ill { font-size: 14px; color: var(--muted); display: flex; gap: 8px; align-items: baseline; }
+.note-ill::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: repeating-linear-gradient(45deg, var(--muted) 0 2px, transparent 2px 4px); flex: none; transform: translateY(1px); }
+
+/* Sections */
+.part { display: grid; gap: 28px; scroll-margin-top: 24px; }
+.part-head { display: grid; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.part-head .k { font-family: var(--f-mono); font-size: 13px; color: var(--accent); letter-spacing: .04em; }
+.part-head h2 { font-size: clamp(26px, 3.4vw, 34px); }
+.part-head p { color: var(--muted); max-width: 64ch; }
+.prose { display: grid; gap: 14px; max-width: 68ch; }
+ul, ol { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
+
+.step { display: grid; gap: 16px; scroll-margin-top: 24px; padding: 22px 22px 24px; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; }
+.step-head { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; }
+.step-no { font-family: var(--f-mono); font-size: 13px; font-weight: 500; color: var(--accent-ink); background: var(--accent); border-radius: 7px; padding: 3px 8px; }
+.step h3 { font-size: 21px; }
+.done { display: flex; gap: 6px; align-items: center; font-size: 14px; color: var(--muted); cursor: pointer; user-select: none; }
+.done input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+.step.is-done { border-color: var(--accent); }
+.step.is-done .step-head h3 { color: var(--muted); }
+.step ol.do { counter-reset: none; }
+.step ol.do li::marker { color: var(--accent); font-weight: 700; }
+.rename { display: inline-flex; gap: 6px; align-items: baseline; font-weight: 700; background: var(--accent-soft); color: var(--ink); border-radius: 6px; padding: 0 .4em; }
+.rename::before { content: "Rename to"; font-weight: 400; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+
+/* Callouts */
+.callout { border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; font-size: 16px; border: 1px solid var(--line); background: var(--surface-2); }
+.callout .t { font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .07em; }
+.callout.warn { background: var(--warn-soft); border-color: transparent; }
+.callout.warn .t { color: var(--warn); }
+.callout.key { background: var(--accent-soft); border-color: transparent; }
+.callout.key .t { color: var(--accent); }
+
+/* Code blocks */
+.code { border: 1px solid var(--line); border-radius: 12px; background: var(--code-bg); overflow: hidden; min-width: 0; }
+.code-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 7px 8px 7px 14px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.code-head .lbl { display: flex; gap: 8px; align-items: center; min-width: 0; }
+.code-head .lbl b { color: var(--ink); font-weight: 600; }
+.copy { font: 600 13px var(--f-body); color: var(--accent); background: var(--surface); border: 1px solid var(--line); border-radius: 7px; padding: 4px 12px; cursor: pointer; flex: none; }
+.copy:hover { border-color: var(--accent); }
+.copy.ok { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.code pre { margin: 0; padding: 12px 14px; overflow-x: auto; font-family: var(--f-mono); font-size: 13.5px; line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+.mode { font-family: var(--f-mono); font-size: 11.5px; padding: 1px 6px; border-radius: 5px; }
+.mode.fx { background: var(--fx-soft); color: var(--fx); }
+.mode.txt { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+
+/* Illustrated designer card */
+figure { margin: 0; display: grid; gap: 8px; min-width: 0; }
+figcaption { font-size: 13.5px; color: var(--muted); display: flex; gap: 8px; align-items: baseline; }
+figcaption::before { content: ""; width: 10px; height: 10px; border-radius: 3px; background: repeating-linear-gradient(45deg, var(--muted) 0 2px, transparent 2px 4px); flex: none; transform: translateY(1px); }
+.canvas { background: radial-gradient(var(--line) 1px, transparent 1.2px) 0 0 / 16px 16px, var(--surface-2); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 14px; justify-items: center; overflow-x: auto; }
+.pa { width: 100%; max-width: 560px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+.pa-head { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.ico { width: 30px; height: 30px; border-radius: 7px; background: var(--c, var(--c-ctrl)); display: grid; place-items: center; color: #fff; }
+.ico svg { width: 17px; height: 17px; }
+.pa-title { font-weight: 700; font-size: 15.5px; line-height: 1.25; }
+.pa-kind { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; white-space: nowrap; }
+.pa-body { padding: 10px 12px 12px; display: grid; gap: 8px; }
+.fld { display: grid; grid-template-columns: 128px minmax(0, 1fr); gap: 10px; align-items: start; font-size: 14px; }
+.fld .l { color: var(--muted); padding-top: 5px; }
+.fld .v { border: 1px solid var(--line); border-radius: 6px; padding: 4px 8px; min-height: 32px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; font-family: var(--f-mono); font-size: 12.5px; overflow-wrap: anywhere; background: var(--surface); min-width: 0; }
+.fld .v.plain { font-family: var(--f-body); font-size: 14px; }
+.fld .v.toggle { border: 0; padding-left: 0; font-family: var(--f-body); font-size: 14px; gap: 8px; }
+.sw { width: 34px; height: 18px; border-radius: 99px; background: var(--accent); position: relative; flex: none; }
+.sw::after { content: ""; position: absolute; top: 2px; right: 2px; width: 14px; height: 14px; background: var(--surface); border-radius: 50%; }
+.sw.off { background: var(--line); }
+.sw.off::after { right: auto; left: 2px; }
+.tok { display: inline-flex; align-items: center; gap: 4px; border-radius: 5px; padding: 1px 6px; font-family: var(--f-body); font-size: 12.5px; font-weight: 600; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.tok.fx { background: var(--fx-soft); color: var(--fx); }
+.tok.fx::before { content: "fx"; font-family: var(--f-mono); font-size: 11px; font-style: italic; }
+.tok.dyn { background: var(--dyn-soft); color: var(--dyn); }
+.days { display: flex; gap: 4px; flex-wrap: wrap; }
+.days span { font-family: var(--f-body); font-size: 12px; border: 1px solid var(--line); border-radius: 5px; padding: 1px 7px; }
+.days span.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.pa-tabs { display: flex; gap: 16px; padding: 0 12px; border-bottom: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+.pa-tabs span { padding: 6px 0; }
+.pa-tabs span.on { color: var(--ink); font-weight: 700; box-shadow: inset 0 -2px 0 var(--accent); }
+.connector { width: 2px; height: 18px; background: var(--line); justify-self: center; margin: -14px 0; }
+
+/* Flow map */
+.map { display: grid; gap: 6px; font-size: 14.5px; }
+.map .row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: 7px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 9px 4px 5px; box-shadow: var(--shadow); }
+.chip .ico { width: 22px; height: 22px; border-radius: 5px; }
+.chip .ico svg { width: 13px; height: 13px; }
+.chip .s { font-size: 12px; color: var(--muted); font-family: var(--f-mono); }
+.loop { border: 1.5px dashed var(--c-ctrl); border-radius: 12px; padding: 10px 12px 12px; display: grid; gap: 6px; background: color-mix(in srgb, var(--surface) 55%, transparent); }
+.loop > .lt { font-weight: 700; font-size: 13.5px; display: flex; align-items: center; gap: 7px; }
+.loop > .lt .ico { width: 22px; height: 22px; border-radius: 5px; }
+.loop > .lt .ico svg { width: 13px; height: 13px; }
+.arrow { color: var(--muted); font-size: 13px; padding-left: 12px; }
+
+/* How it works */
+.pipeline { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+.node { position: relative; display: grid; gap: 6px; align-content: start; padding: 14px 14px 16px; background: var(--surface); border: 1px solid var(--line); border-left-width: 0; }
+.node:first-child { border-left-width: 1px; border-radius: 14px 0 0 14px; }
+.node:last-child { border-radius: 0 14px 14px 0; }
+.node .ico { width: 34px; height: 34px; border-radius: 9px; }
+.node h4 { font-size: 16px; }
+.node p { font-size: 14px; color: var(--muted); line-height: 1.45; }
+.node:not(:last-child)::after { content: ""; position: absolute; right: -8px; top: 26px; width: 14px; height: 14px; background: var(--surface); border-top: 1px solid var(--line); border-right: 1px solid var(--line); transform: rotate(45deg); z-index: 1; }
+
+/* Formula */
+.formula { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--surface); }
+.formula .f1 { padding: 18px 20px; display: grid; gap: 10px; border-right: 1px solid var(--line); }
+.eq { font-family: var(--f-display); font-size: 22px; font-weight: 600; line-height: 1.3; }
+.eq .frac { display: inline-grid; vertical-align: middle; text-align: center; font-size: 17px; margin: 0 4px; }
+.eq .frac span:first-child { border-bottom: 1.5px solid var(--ink); padding: 0 4px; }
+.worked { font-family: var(--f-mono); font-size: 13.5px; color: var(--muted); display: grid; gap: 2px; font-variant-numeric: tabular-nums; }
+.worked b { color: var(--ink); font-weight: 500; }
+.bands { padding: 14px 18px; display: grid; gap: 7px; align-content: start; font-size: 14.5px; }
+.bands div { display: grid; grid-template-columns: 1.4em 1fr auto; gap: 8px; align-items: baseline; }
+.bands .r { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); }
+
+/* Teams mock */
+.teams { width: 100%; max-width: 760px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+.teams-bar { display: flex; gap: 10px; align-items: baseline; padding: 10px 16px; border-bottom: 1px solid var(--line); font-weight: 700; font-size: 15px; }
+.teams-bar span { font-weight: 400; font-size: 13px; color: var(--muted); }
+.post { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding: 16px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--c-teams); color: #fff; display: grid; place-items: center; font-weight: 700; }
+.post-body { display: grid; gap: 8px; min-width: 0; background: var(--surface-2); border-radius: 10px; padding: 12px 14px; font-size: 14.5px; }
+.post-meta { font-size: 13px; color: var(--muted); }
+.post-meta b { color: var(--ink); }
+.post-body h4 { font-family: var(--f-body); font-size: 19px; font-weight: 700; }
+.tscroll { overflow-x: auto; }
+.tm { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+.tm th, .tm td { border: 1px solid var(--line); padding: 6px 9px; text-align: left; vertical-align: top; }
+.tm th { background: var(--surface); font-weight: 700; white-space: nowrap; }
+.tm td.n { text-align: right; white-space: nowrap; }
+.fine { font-size: 13px; color: var(--muted); font-style: italic; }
+
+/* Excel mock */
+.xl { width: 100%; max-width: 680px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; font-size: 13.5px; }
+.xl-bar { display: flex; justify-content: space-between; gap: 10px; padding: 8px 12px; background: var(--c-excel); color: #fff; font-weight: 600; font-size: 13px; }
+.xl-bar span:last-child { font-weight: 400; opacity: .9; }
+.xl-scroll { overflow-x: auto; }
+.xl table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+.xl th, .xl td { border: 1px solid var(--line); padding: 4px 8px; white-space: nowrap; text-align: left; }
+.xl thead th, .xl tbody th { background: var(--surface-2); color: var(--muted); font-weight: 400; text-align: center; font-size: 12px; }
+.xl td.h { background: #1f4e79; color: #fff; font-weight: 700; }
+.xl td.n { text-align: right; }
+.xl-tabs { display: flex; gap: 2px; padding: 0 8px; border-top: 1px solid var(--line); background: var(--surface-2); overflow-x: auto; }
+.xl-tabs span { padding: 5px 12px; font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.xl-tabs span.on { background: var(--surface); color: var(--c-excel); font-weight: 700; box-shadow: inset 0 -2px 0 var(--c-excel); }
+
+/* Link anatomy */
+.anatomy { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; display: grid; gap: 12px; }
+.anatomy code.url { background: none; border: 0; padding: 0; font-size: 13.5px; line-height: 1.9; overflow-wrap: anywhere; }
+.anatomy mark { border-radius: 4px; padding: 1px 3px; color: var(--ink); }
+.anatomy mark.m1 { background: var(--dyn-soft); box-shadow: inset 0 -2px 0 var(--dyn); }
+.anatomy mark.m2 { background: var(--fx-soft); box-shadow: inset 0 -2px 0 var(--fx); }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 14px; }
+.legend span { display: flex; gap: 6px; align-items: center; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+table.plain { border-collapse: collapse; width: 100%; font-size: 15px; }
+table.plain th, table.plain td { padding: 10px 14px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+table.plain tr:last-child td { border-bottom: 0; }
+table.plain th { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; background: var(--surface-2); }
+table.plain td:first-child { font-weight: 600; }
+
+.checklist { list-style: none; padding: 0; display: grid; gap: 10px; }
+.checklist li { display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start; }
+.checklist li::before { content: ""; width: 18px; height: 18px; margin-top: 4px; border: 2px solid var(--accent); border-radius: 5px; }
+
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.mini { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--surface); display: grid; gap: 8px; align-content: start; }
+.mini h4 { font-size: 17px; }
+.mini p, .mini li { font-size: 15.5px; }
+
+footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 20px; }
+
+@media (max-width: 980px) {
+  .wrap { grid-template-columns: minmax(0, 1fr); gap: 32px; padding-block: 24px 72px; }
+  .rail { position: static; }
+  .rail nav { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .pipeline { grid-template-columns: minmax(0, 1fr); }
+  .node, .node:first-child, .node:last-child { border-left-width: 1px; border-top-width: 0; border-radius: 0; }
+  .node:first-child { border-top-width: 1px; border-radius: 14px 14px 0 0; }
+  .node:last-child { border-radius: 0 0 14px 14px; }
+  .node:not(:last-child)::after { right: auto; left: 28px; top: auto; bottom: -8px; transform: rotate(135deg); }
+}
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .facts div:nth-child(3) { border-left: 0; }
+  .facts div:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .formula, .two { grid-template-columns: minmax(0, 1fr); }
+  .formula .f1 { border-right: 0; border-bottom: 1px solid var(--line); }
+  .step { padding: 16px 14px 18px; }
+  .step-head { grid-template-columns: auto 1fr; }
+  .step-head .done { grid-column: 1 / -1; }
+  .fld { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .fld .l { padding-top: 0; }
+  .canvas { padding: 12px; }
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-data" viewBox="0 0 24 24"><path d="M9 4H7a2 2 0 0 0-2 2v4l-2 2 2 2v4a2 2 0 0 0 2 2h2M15 4h2a2 2 0 0 1 2 2v4l2 2-2 2v4a2 2 0 0 1-2 2h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-var" viewBox="0 0 24 24"><path d="M5 6l14 12M19 6L5 18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="i-loop" viewBox="0 0 24 24"><path d="M4 12a6 6 0 0 1 6-6h8m-3-3 3 3-3 3M20 12a6 6 0 0 1-6 6H6m3 3-3-3 3-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-branch" viewBox="0 0 24 24"><path d="M6 4v6a4 4 0 0 0 4 4h4m4 6v-6a4 4 0 0 0-4-4M6 20v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 12h17M12 3.5c2.5 2.6 2.5 14.4 0 17M12 3.5c-2.5 2.6-2.5 14.4 0 17" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 10h16M4 15h16M10 4v16" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-8l-5 4v-4H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <aside class="rail">
+    <div class="brand">Daily utilisation report<br><span style="color:var(--muted);font-weight:600">Power Automate build guide</span></div>
+    <nav aria-label="Guide sections">
+      <a href="#overview"><span class="k">—</span>What you'll build</a>
+      <a href="#before"><span class="k">0</span>Before you start</a>
+      <a href="#part-a"><span class="k">A</span>Connect Clockify</a>
+      <a href="#part-b"><span class="k">B</span>Prepare the Excel file</a>
+      <a href="#part-c"><span class="k">C</span>Build the daily flow</a>
+      <a href="#part-d"><span class="k">D</span>Test safely</a>
+      <a href="#part-e"><span class="k">E</span>Go live</a>
+      <a href="#part-f"><span class="k">F</span>Everyday changes</a>
+      <a href="#extras"><span class="k">+</span>Optional add-ons</a>
+      <a href="#trouble"><span class="k">?</span>Troubleshooting</a>
+      <a href="#trial"><span class="k">90</span>Before the trial ends</a>
+    </nav>
+    <div class="progress" aria-live="polite">
+      <div class="bar"><i id="pbar"></i></div>
+      <small id="ptext">0 of 0 steps ticked</small>
+    </div>
+  </aside>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero" id="overview">
+      <div class="eyebrow">Step-by-step guide · Power Automate Premium trial</div>
+      <h1>Build the daily utilisation report in Power Automate</h1>
+      <p class="lede">Every weekday morning, one flow reads yesterday's hours from Clockify, matches people to their Team Leads using your Excel mapping, works out each person's utilisation and posts a separate report in each Team Lead's Teams channel. After setup, you only maintain the Excel file.</p>
+      <dl class="facts">
+        <div><dt>Build time</dt><dd>About 2 hours, once</dd></div>
+        <div><dt>Runs</dt><dd>Mon–Fri, 9:00</dd></div>
+        <div><dt>Clockify calls</dt><dd>2 per run</dd></div>
+        <div><dt>Licence</dt><dd>Only the flow owner</dd></div>
+      </dl>
+      <p class="note-ill">The pictures in this guide are drawings of each screen, not screenshots. Microsoft updates Power Automate often, so a label or button on your screen may look slightly different.</p>
+
+      <figure>
+        <div class="canvas">
+          <div class="teams">
+            <div class="teams-bar"># Daily Utilisation <span>Kavita Shah's team channel</span></div>
+            <div class="post">
+              <div class="avatar" aria-hidden="true">W</div>
+              <div class="post-body">
+                <div class="post-meta"><b>Workflows</b> · 9:00 AM</div>
+                <h4>📊 Daily utilisation – Kavita Shah</h4>
+                <p><b>Tuesday, 20 October 2026</b> · Team logged <b>17.5 h</b> of 20.0 h · Team utilisation <b>88%</b></p>
+                <div class="tscroll">
+                  <table class="tm">
+                    <tr><th>Resource</th><th>Projects worked on</th><th>Logged (h)</th><th>Capacity (h)</th><th>Utilisation</th><th>Status</th></tr>
+                    <tr><td>Ananya Iyer</td><td>Apollo Portal (6.0 h)<br>Internal – Meetings (1.5 h)</td><td class="n">7.5</td><td class="n">8.0</td><td class="n">94%</td><td>✅ On track</td></tr>
+                    <tr><td>Rohan Desai</td><td>Apollo Portal (5.0 h)</td><td class="n">5.0</td><td class="n">8.0</td><td class="n">63%</td><td>🔻 Under-utilised</td></tr>
+                    <tr><td>Meera Pillai</td><td>Data Migration (5.0 h)</td><td class="n">5.0</td><td class="n">4.0</td><td class="n">125%</td><td>🔺 Over-utilised</td></tr>
+                  </table>
+                </div>
+                <p class="fine">Under-utilised: below 80% · Over-utilised: above 110% · Source: Clockify</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <figcaption>What each Team Lead sees in their channel every morning (example data from the Excel template).</figcaption>
+      </figure>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="part" id="how">
+      <div class="part-head">
+        <div class="k">HOW IT WORKS</div>
+        <h2>One flow, five stages</h2>
+      </div>
+      <div class="pipeline">
+        <div class="node"><span class="ico" style="--c:var(--c-sched)"><svg><use href="#i-clock"/></svg></span><h4>Schedule</h4><p>Starts itself every weekday at 9:00. Monday's run reports on Friday.</p></div>
+        <div class="node"><span class="ico" style="--c:var(--c-http)"><svg><use href="#i-globe"/></svg></span><h4>Clockify</h4><p>Gets everyone's hours for the report day, split by project.</p></div>
+        <div class="node"><span class="ico" style="--c:var(--c-excel)"><svg><use href="#i-grid"/></svg></span><h4>Excel</h4><p>Reads who reports to whom, daily hours, leave and each TL's channel.</p></div>
+        <div class="node"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span><h4>Calculate</h4><p>Hours, capacity, utilisation % and a status for each person.</p></div>
+        <div class="node"><span class="ico" style="--c:var(--c-teams)"><svg><use href="#i-chat"/></svg></span><h4>Teams</h4><p>Posts one report in each Team Lead's channel.</p></div>
+      </div>
+
+      <div class="formula">
+        <div class="f1">
+          <div class="eq">Utilisation = <span class="frac"><span>Logged hours</span><span>Capacity</span></span> × 100</div>
+          <div class="worked">
+            <span>Clockify sends time in seconds:</span>
+            <span><b>23,400 s ÷ 3,600 = 6.5 h</b> logged</span>
+            <span>Capacity = Daily Hours in Excel (blank = 8 h),</span>
+            <span>or 0 h when the person is on leave</span>
+            <span><b>6.5 h ÷ 8 h × 100 = 81%</b> → On track</span>
+          </div>
+        </div>
+        <div class="bands">
+          <div><span>✅</span><span>On track</span><span class="r">80–110%</span></div>
+          <div><span>🔻</span><span>Under-utilised</span><span class="r">below 80%</span></div>
+          <div><span>🔺</span><span>Over-utilised</span><span class="r">above 110%</span></div>
+          <div><span>⚠️</span><span>No time logged</span><span class="r">0 h</span></div>
+          <div><span>🌴</span><span>On leave</span><span class="r">in Leave table</span></div>
+          <div><span>❓</span><span>Not in Clockify</span><span class="r">email mismatch</span></div>
+        </div>
+      </div>
+      <p class="prose" style="color:var(--muted);font-size:15px">The 80% and 110% limits are settings you can change in one place (step C2).</p>
+    </section>
+
+    <!-- BEFORE YOU START -->
+    <section class="part" id="before">
+      <div class="part-head">
+        <div class="k">0 · BEFORE YOU START</div>
+        <h2>Check you have these</h2>
+      </div>
+      <ul class="checklist">
+        <li><span><b>Power Automate Premium trial is active.</b> Open <a href="https://make.powerautomate.com" target="_blank" rel="noopener">make.powerautomate.com</a>. If the trial is active, the HTTP action (step A3) does not show a "Premium" upgrade prompt.</span></li>
+        <li><span><b>Admin (or Owner) role in Clockify.</b> Clockify only gives the API the hours you can see in its Reports page. With a normal member role, the report would contain only your own hours.</span></li>
+        <li><span><b>A place for the Excel file</b> in OneDrive for Business or a SharePoint site that only the PMO team can open.</span></li>
+        <li><span><b>A test channel in Teams</b>, for example "Utilisation – Test" in a team only you are in. You'll send test reports there before anything reaches the Team Leads.</span></li>
+        <li><span><b>An OK from IT.</b> Your company's data-security rules apply when you connect Clockify to Microsoft 365. Ask IT to confirm that the HTTP connector is allowed in your company's Power Automate data policy (if it isn't, saving the flow shows a "data policy" error).</span></li>
+      </ul>
+    </section>
+
+    <!-- PART A -->
+    <section class="part" id="part-a">
+      <div class="part-head">
+        <div class="k">PART A · ABOUT 15 MINUTES</div>
+        <h2>Connect Clockify</h2>
+        <p>This is the connection test from your plan, plus one extra: noting your Workspace ID, which every later step needs.</p>
+      </div>
+
+      <article class="step" id="a1">
+        <div class="step-head"><span class="step-no">A1</span><h3>Copy your Clockify API key</h3><label class="done"><input type="checkbox" id="done-a1"> Done</label></div>
+        <ol class="do">
+          <li>In Clockify, click your profile picture (top right) and open <b>Preferences</b> (called <b>Profile settings</b> in older versions).</li>
+          <li>Open the <b>Advanced</b> tab and find <b>API key</b>. Click <b>Generate</b> and copy the key.</li>
+          <li>Keep it somewhere private for the next 30 minutes, such as a password manager. Don't email it or paste it into a chat.</li>
+        </ol>
+        <div class="callout key"><span class="t">Why it matters</span>The key opens your Clockify account. In Power Automate you'll hide it with <b>Secure inputs</b>, so it never shows in run history.</div>
+      </article>
+
+      <article class="step" id="a2">
+        <div class="step-head"><span class="step-no">A2</span><h3>Find your Workspace ID</h3><label class="done"><input type="checkbox" id="done-a2"> Done</label></div>
+        <ol class="do">
+          <li>In Clockify, open the workspace <b>Settings</b> page.</li>
+          <li>Look at the address bar. The Workspace ID is the long code between <code>/workspaces/</code> and <code>/settings</code>.</li>
+          <li>Save it in a note. You'll paste it into two web addresses in Part C.</li>
+        </ol>
+        <div class="anatomy">
+          <code class="url">https://app.clockify.me/workspaces/<mark class="m1">64f1c2a9b7e3d10f5a2c88e1</mark>/settings</code>
+          <div class="legend"><span><i style="background:var(--dyn)"></i>Workspace ID (example)</span></div>
+        </div>
+        <p style="font-size:15px;color:var(--muted)">If you can't spot it, the test in A3 also returns it: it's the <code>id</code> next to your workspace name.</p>
+      </article>
+
+      <article class="step" id="a3">
+        <div class="step-head"><span class="step-no">A3</span><h3>Run the connection test</h3><label class="done"><input type="checkbox" id="done-a3"> Done</label></div>
+        <ol class="do">
+          <li>In Power Automate: <b>Create</b> → <b>Instant cloud flow</b> → name it "Clockify test" → choose <b>Manually trigger a flow</b> → <b>Create</b>.</li>
+          <li>Click <b>+</b> under the trigger, search for <b>HTTP</b> and pick the action called just <b>HTTP</b> (not "HTTP with Microsoft Entra ID").</li>
+          <li>Fill it in as shown below. Under <b>Headers</b>, type <code>X-Api-Key</code> on the left and paste your API key on the right.</li>
+          <li>Open the action's <b>Settings</b> tab and switch on <b>Secure inputs</b>.</li>
+          <li><b>Save</b> → <b>Test</b> → <b>Manually</b> → <b>Test</b> → <b>Run flow</b>.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>URI</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>https://api.clockify.me/api/v1/workspaces</pre></div>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-http)"><svg><use href="#i-globe"/></svg></span><span class="pa-title">HTTP</span><span class="pa-kind">HTTP · Premium</span></div>
+              <div class="pa-tabs"><span class="on">Parameters</span><span>Settings</span><span>Code view</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">URI *</span><span class="v">https://api.clockify.me/api/v1/workspaces</span></div>
+                <div class="fld"><span class="l">Method *</span><span class="v plain">GET</span></div>
+                <div class="fld"><span class="l">Headers</span><span class="v">X-Api-Key&nbsp;&nbsp;│&nbsp;&nbsp;•••••••••••••••••••••</span></div>
+              </div>
+            </div>
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-http)"><svg><use href="#i-globe"/></svg></span><span class="pa-title">HTTP</span><span class="pa-kind">Settings tab</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">Secure inputs</span><span class="v toggle"><span class="sw"></span>On</span></div>
+                <div class="fld"><span class="l">Secure outputs</span><span class="v toggle"><span class="sw off"></span>Off for now</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>The HTTP action filled in for the connection test.</figcaption>
+        </figure>
+        <p><b>Success looks like this:</b> the HTTP step has a green tick, <b>Status code 200</b>, and the body lists your workspace:</p>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Example result</b></span></div><pre>[
+  {
+    "id": "64f1c2a9b7e3d10f5a2c88e1",
+    "name": "Your Company Workspace",
+    ...
+  }
+]</pre></div>
+        <p style="font-size:15px;color:var(--muted)">A <b>401</b> means the key is wrong or has a typo. Check the header name is exactly <code>X-Api-Key</code>. You can delete this test flow once it works.</p>
+      </article>
+    </section>
+
+    <!-- PART B -->
+    <section class="part" id="part-b">
+      <div class="part-head">
+        <div class="k">PART B · ABOUT 20 MINUTES</div>
+        <h2>Prepare the Excel file</h2>
+        <p>The flow reads three Excel tables by name. Start from the template file <b>Utilisation-Mapping-Template.xlsx</b>, which has the tables already set up, and copy your existing TL–Resource mapping into it.</p>
+      </div>
+
+      <article class="step" id="b1">
+        <div class="step-head"><span class="step-no">B1</span><h3>Put the template in OneDrive or SharePoint</h3><label class="done"><input type="checkbox" id="done-b1"> Done</label></div>
+        <ol class="do">
+          <li>Upload <b>Utilisation-Mapping-Template.xlsx</b> to a OneDrive for Business or SharePoint folder that only the PMO team can open. Rename it if you like, for example "Utilisation Mapping.xlsx".</li>
+          <li>Open it in Excel for the web. You'll see five sheets: Read me, Resources, TeamLeads, Leave and History.</li>
+        </ol>
+        <div class="callout warn"><span class="t">Keep these names</span>Don't rename the tables or their column headings. The flow looks for them by name. You can rename the file and the sheets.</div>
+      </article>
+
+      <article class="step" id="b2">
+        <div class="step-head"><span class="step-no">B2</span><h3>Fill in Resources</h3><label class="done"><input type="checkbox" id="done-b2"> Done</label></div>
+        <p>Replace the example rows with your mapping, one row per person.</p>
+        <figure>
+          <div class="canvas">
+            <div class="xl">
+              <div class="xl-bar"><span>Utilisation Mapping.xlsx</span><span>Table name: Resources</span></div>
+              <div class="xl-scroll">
+                <table>
+                  <thead><tr><th></th><th>A</th><th>B</th><th>C</th><th>D</th></tr></thead>
+                  <tbody>
+                    <tr><th>1</th><td class="h">Resource Name</td><td class="h">Email</td><td class="h">Team Lead</td><td class="h">Daily Hours</td></tr>
+                    <tr><th>2</th><td>Ananya Iyer</td><td>ananya.iyer@example.com</td><td>Kavita Shah</td><td class="n">8</td></tr>
+                    <tr><th>3</th><td>Rohan Desai</td><td>rohan.desai@example.com</td><td>Kavita Shah</td><td class="n">8</td></tr>
+                    <tr><th>4</th><td>Meera Pillai</td><td>meera.pillai@example.com</td><td>Kavita Shah</td><td class="n">4</td></tr>
+                    <tr><th>5</th><td>Tom Fletcher</td><td>tom.fletcher@example.com</td><td>Arjun Nair</td><td class="n">8</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="xl-tabs"><span>Read me</span><span class="on">Resources</span><span>TeamLeads</span><span>Leave</span><span>History</span></div>
+            </div>
+          </div>
+          <figcaption>The Resources table with example rows.</figcaption>
+        </figure>
+        <div class="tbl-wrap"><table class="plain">
+          <tr><th>Column</th><th>What to enter</th></tr>
+          <tr><td>Resource Name</td><td>The person's name as you want it shown in the report.</td></tr>
+          <tr><td>Email</td><td>The email the person uses to sign in to Clockify. This is how the flow finds their hours, so it must match exactly.</td></tr>
+          <tr><td>Team Lead</td><td>The TL's name, spelled exactly as in the TeamLeads table.</td></tr>
+          <tr><td>Daily Hours</td><td>Working hours per day: 8, or 4 for a part-timer. Leave blank to use the default (8).</td></tr>
+        </table></div>
+        <div class="callout"><span class="t">Tip</span>To add a person later, type in the first empty row under the table; Excel extends the table by itself. Don't leave empty rows in the middle.</div>
+      </article>
+
+      <article class="step" id="b3">
+        <div class="step-head"><span class="step-no">B3</span><h3>Fill in TeamLeads with each channel link</h3><label class="done"><input type="checkbox" id="done-b3"> Done</label></div>
+        <ol class="do">
+          <li>In Teams, go to the channel where a TL's report should appear.</li>
+          <li>Click <b>⋯</b> (More options) next to the channel name → <b>Copy link</b> (older Teams: <b>Get link to channel</b> → <b>Copy</b>).</li>
+          <li>Paste it into the <b>Channel Link</b> column next to the TL's name.</li>
+        </ol>
+        <div class="callout key"><span class="t">For testing</span>Put your <b>test channel's</b> link against every TL for now. You'll swap in the real channels in Part E.</div>
+        <div class="anatomy">
+          <code class="url">https://teams.microsoft.com/l/channel/<mark class="m1">19%3a8f2c41d07b6e4a…%40thread.tacv2</mark>/Daily%20Utilisation?groupId=<mark class="m2">1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d</mark>&amp;tenantId=…</code>
+          <div class="legend"><span><i style="background:var(--dyn)"></i>Channel ID</span><span><i style="background:var(--fx)"></i>Team ID</span></div>
+        </div>
+        <p style="font-size:15px;color:var(--muted)">You don't need to pick these parts out yourself; the flow does it. Just paste the whole link. It must be a link to a <b>channel</b>, not to a single message.</p>
+      </article>
+
+      <article class="step" id="b4">
+        <div class="step-head"><span class="step-no">B4</span><h3>Add leave and public holidays</h3><label class="done"><input type="checkbox" id="done-b4"> Done</label></div>
+        <ul>
+          <li>One row per leave period: <b>Email</b>, <b>From</b>, <b>To</b> (both dates required; for one day, use the same date twice) and an optional <b>Note</b>.</li>
+          <li>People on leave show as 🌴 On leave and don't count towards team capacity.</li>
+          <li>For a public holiday, type <b>ALL</b> in the Email column. The flow then sends no report for that day.</li>
+        </ul>
+      </article>
+    </section>
+
+    <!-- PART C -->
+    <section class="part" id="part-c">
+      <div class="part-head">
+        <div class="k">PART C · ABOUT 75 MINUTES</div>
+        <h2>Build the daily flow</h2>
+        <p>Follow the steps in order. Every formula is ready to copy, so there's nothing to write yourself. This is the finished flow you're building:</p>
+      </div>
+
+      <figure>
+        <div class="canvas" style="justify-items:stretch">
+          <div class="map">
+            <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-sched)"><svg><use href="#i-clock"/></svg></span>Recurrence <span class="s">Mon–Fri 9:00</span></span></div>
+            <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Settings</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Report date</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Range start</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Range end</span></div>
+            <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>TeamRowsHtml</span><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>TeamLogged</span><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>TeamCapacity</span></div>
+            <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-excel)"><svg><use href="#i-grid"/></svg></span>Get Resources</span><span class="chip"><span class="ico" style="--c:var(--c-excel)"><svg><use href="#i-grid"/></svg></span>Get Team Leads</span><span class="chip"><span class="ico" style="--c:var(--c-excel)"><svg><use href="#i-grid"/></svg></span>Get Leave</span></div>
+            <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-filter"/></svg></span>Holiday check</span><span class="chip"><span class="ico" style="--c:var(--c-ctrl)"><svg><use href="#i-branch"/></svg></span>Is it a holiday? <span class="s">yes → Terminate</span></span></div>
+            <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-http)"><svg><use href="#i-globe"/></svg></span>Get Clockify users</span><span class="chip"><span class="ico" style="--c:var(--c-http)"><svg><use href="#i-globe"/></svg></span>Get Clockify report</span></div>
+            <div class="loop">
+              <div class="lt"><span class="ico" style="--c:var(--c-ctrl)"><svg><use href="#i-loop"/></svg></span>For each Team Lead</div>
+              <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>Set variable <span class="s">×3 reset</span></span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-filter"/></svg></span>Team resources</span></div>
+              <div class="loop">
+                <div class="lt"><span class="ico" style="--c:var(--c-ctrl)"><svg><use href="#i-loop"/></svg></span>For each resource</div>
+                <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-filter"/></svg></span>Find user</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-filter"/></svg></span>Find time</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-filter"/></svg></span>Find leave</span></div>
+                <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Logged hours</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Capacity</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Utilisation</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Status</span><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Project list</span></div>
+                <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>Append row</span><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>Increment TeamLogged</span><span class="chip"><span class="ico" style="--c:var(--c-var)"><svg><use href="#i-var"/></svg></span>Increment TeamCapacity</span></div>
+              </div>
+              <div class="row"><span class="chip"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span>Message</span><span class="chip"><span class="ico" style="--c:var(--c-teams)"><svg><use href="#i-chat"/></svg></span>Post message in a chat or channel</span></div>
+            </div>
+          </div>
+        </div>
+        <figcaption>The finished flow, top to bottom. Dashed boxes are loops: everything inside runs once per Team Lead, and once per person.</figcaption>
+      </figure>
+
+      <div class="two">
+        <div class="mini">
+          <h4>Three things you'll do over and over</h4>
+          <ol>
+            <li><b>Add an action:</b> click <b>+</b> where it should go → <b>Add an action</b> → search for its name.</li>
+            <li><b>Rename it straight away:</b> click the action's title in the side panel and type the new name. Formulas refer to actions by name, so use the exact names in this guide.</li>
+            <li><b>Paste a formula:</b> click in the field → click the <b>fx</b> icon (Insert expression) → paste → <b>Add</b>. It appears as a purple <span class="tok fx">token</span>.</li>
+          </ol>
+        </div>
+        <div class="mini">
+          <h4>How to read the formula boxes</h4>
+          <ul>
+            <li><span class="mode fx">paste with fx</span> goes in through the <b>fx</b> button, never typed straight into the field.</li>
+            <li><span class="mode txt">type or paste as text</span> goes straight into the field.</li>
+            <li>Save often. If a step won't save, check the action names match this guide exactly, including capital letters.</li>
+          </ul>
+        </div>
+      </div>
+
+      <article class="step" id="c1">
+        <div class="step-head"><span class="step-no">C1</span><h3>Create the scheduled flow</h3><label class="done"><input type="checkbox" id="done-c1"> Done</label></div>
+        <ol class="do">
+          <li><b>Create</b> → <b>Scheduled cloud flow</b>.</li>
+          <li>Name: <b>Daily Utilisation Report</b>. Starting: tomorrow, 9:00 AM. Repeat every: <b>1 Week</b>. On these days: <b>M T W T F</b>. Click <b>Create</b>.</li>
+          <li>Click the <b>Recurrence</b> trigger and check: <b>Time zone</b> = yours, <b>At these hours</b> = 9, <b>At these minutes</b> = 0.</li>
+        </ol>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-sched)"><svg><use href="#i-clock"/></svg></span><span class="pa-title">Recurrence</span><span class="pa-kind">Schedule</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">Interval *</span><span class="v plain">1</span></div>
+                <div class="fld"><span class="l">Frequency *</span><span class="v plain">Week</span></div>
+                <div class="fld"><span class="l">Time zone</span><span class="v plain">Your time zone</span></div>
+                <div class="fld"><span class="l">On these days</span><span class="v plain"><span class="days"><span class="on">Mon</span><span class="on">Tue</span><span class="on">Wed</span><span class="on">Thu</span><span class="on">Fri</span><span>Sat</span><span>Sun</span></span></span></div>
+                <div class="fld"><span class="l">At these hours</span><span class="v plain">9</span></div>
+                <div class="fld"><span class="l">At these minutes</span><span class="v plain">0</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>The Recurrence trigger.</figcaption>
+        </figure>
+      </article>
+
+      <article class="step" id="c2">
+        <div class="step-head"><span class="step-no">C2</span><h3>Add your settings</h3><label class="done"><input type="checkbox" id="done-c2"> Done</label></div>
+        <ol class="do">
+          <li>Add a <b>Compose</b> action (under Data Operation). <span class="rename">Settings</span></li>
+          <li>Paste this into <b>Inputs</b> as plain text:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Settings → Inputs</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>{
+  "TimeZone": "India Standard Time",
+  "DailyHours": 8,
+  "UnderPct": 80,
+  "OverPct": 110
+}</pre></div>
+        <div class="tbl-wrap"><table class="plain">
+          <tr><th>Setting</th><th>Meaning</th></tr>
+          <tr><td>TimeZone</td><td>Your Windows time-zone name. The example is India; others include <code>GMT Standard Time</code> (UK), <code>W. Europe Standard Time</code>, <code>Eastern Standard Time</code> (US East), <code>Singapore Standard Time</code>.</td></tr>
+          <tr><td>DailyHours</td><td>Default capacity per person per day, used when Daily Hours is blank in Excel.</td></tr>
+          <tr><td>UnderPct</td><td>Below this %, a person shows as 🔻 Under-utilised.</td></tr>
+          <tr><td>OverPct</td><td>Above this %, a person shows as 🔺 Over-utilised.</td></tr>
+        </table></div>
+        <p style="font-size:15px;color:var(--muted)">Later, to change a threshold, edit this box and nothing else.</p>
+      </article>
+
+      <article class="step" id="c3">
+        <div class="step-head"><span class="step-no">C3</span><h3>Work out the report date</h3><label class="done"><input type="checkbox" id="done-c3"> Done</label></div>
+        <ol class="do">
+          <li>Add a <b>Compose</b>. <span class="rename">Report date</span></li>
+          <li>Click in <b>Inputs</b> → <b>fx</b> → paste → <b>Add</b>.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Report date → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>addDays(convertFromUtc(utcNow(), outputs('Settings')?['TimeZone']), if(equals(dayOfWeek(convertFromUtc(utcNow(), outputs('Settings')?['TimeZone'])), 1), -3, -1), 'yyyy-MM-dd')</pre></div>
+        <p style="font-size:15px;color:var(--muted)">This gives yesterday's date, or Friday's when the flow runs on a Monday.</p>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-data"/></svg></span><span class="pa-title">Report date</span><span class="pa-kind">Compose</span></div>
+              <div class="pa-body"><div class="fld"><span class="l">Inputs *</span><span class="v"><span class="tok fx">addDays(convertFromUtc(...</span></span></div></div>
+            </div>
+          </div>
+          <figcaption>A pasted formula shows as a purple fx token.</figcaption>
+        </figure>
+      </article>
+
+      <article class="step" id="c4">
+        <div class="step-head"><span class="step-no">C4</span><h3>Turn the date into Clockify's time range</h3><label class="done"><input type="checkbox" id="done-c4"> Done</label></div>
+        <p>Clockify works in UTC, so these two steps convert your local midnight-to-midnight into UTC.</p>
+        <ol class="do">
+          <li>Add a <b>Compose</b>. <span class="rename">Range start</span> Inputs → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Range start → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>convertToUtc(concat(outputs('Report_date'), 'T00:00:00'), outputs('Settings')?['TimeZone'], 'yyyy-MM-ddTHH:mm:ss.fffZ')</pre></div>
+        <ol class="do" start="2">
+          <li>Add another <b>Compose</b>. <span class="rename">Range end</span> Inputs → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Range end → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>convertToUtc(concat(outputs('Report_date'), 'T23:59:59'), outputs('Settings')?['TimeZone'], 'yyyy-MM-ddTHH:mm:ss.fffZ')</pre></div>
+      </article>
+
+      <article class="step" id="c5">
+        <div class="step-head"><span class="step-no">C5</span><h3>Create three variables</h3><label class="done"><input type="checkbox" id="done-c5"> Done</label></div>
+        <p>Variables hold each team's running totals while the flow works through the people. They must be created here, at the top level, not inside a loop.</p>
+        <div class="tbl-wrap"><table class="plain">
+          <tr><th>Add "Initialize variable"</th><th>Name</th><th>Type</th><th>Value</th></tr>
+          <tr><td>1st</td><td><code>TeamRowsHtml</code></td><td>String</td><td>the table header below, pasted as text</td></tr>
+          <tr><td>2nd</td><td><code>TeamLogged</code></td><td>Float</td><td><code>0</code></td></tr>
+          <tr><td>3rd</td><td><code>TeamCapacity</code></td><td>Float</td><td><code>0</code></td></tr>
+        </table></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>TeamRowsHtml → Value</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>&lt;tr&gt;&lt;th&gt;Resource&lt;/th&gt;&lt;th&gt;Projects worked on&lt;/th&gt;&lt;th&gt;Logged (h)&lt;/th&gt;&lt;th&gt;Capacity (h)&lt;/th&gt;&lt;th&gt;Utilisation&lt;/th&gt;&lt;th&gt;Status&lt;/th&gt;&lt;/tr&gt;</pre></div>
+      </article>
+
+      <article class="step" id="c6">
+        <div class="step-head"><span class="step-no">C6</span><h3>Read the three Excel tables</h3><label class="done"><input type="checkbox" id="done-c6"> Done</label></div>
+        <ol class="do">
+          <li>Add <b>List rows present in a table</b> (Excel Online (Business)). <span class="rename">Get Resources</span></li>
+          <li>Location: your OneDrive or SharePoint site → Document Library → File: your mapping file → Table: <b>Resources</b>.</li>
+          <li>Open its <b>Settings</b> tab → switch on <b>Pagination</b> → Threshold <b>5000</b>. Without this, Excel returns only the first 256 rows.</li>
+          <li>Repeat twice: <span class="rename">Get Team Leads</span> for table <b>TeamLeads</b>, and <span class="rename">Get Leave</span> for table <b>Leave</b>.</li>
+          <li>On <b>Get Leave</b> only: open <b>Advanced parameters</b> → <b>DateTime Format</b> → <b>ISO 8601</b>. This makes the leave dates readable.</li>
+        </ol>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-excel)"><svg><use href="#i-grid"/></svg></span><span class="pa-title">Get Leave</span><span class="pa-kind">Excel Online (Business)</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">Location *</span><span class="v plain">OneDrive for Business</span></div>
+                <div class="fld"><span class="l">Document Library *</span><span class="v plain">OneDrive</span></div>
+                <div class="fld"><span class="l">File *</span><span class="v plain">/PMO/Utilisation Mapping.xlsx</span></div>
+                <div class="fld"><span class="l">Table *</span><span class="v plain">Leave</span></div>
+                <div class="fld"><span class="l">DateTime Format</span><span class="v plain">ISO 8601</span></div>
+              </div>
+            </div>
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-excel)"><svg><use href="#i-grid"/></svg></span><span class="pa-title">Get Leave</span><span class="pa-kind">Settings tab</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">Pagination</span><span class="v toggle"><span class="sw"></span>On</span></div>
+                <div class="fld"><span class="l">Threshold</span><span class="v plain">5000</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>One of the three Excel actions; the other two are the same apart from the table and DateTime Format.</figcaption>
+        </figure>
+      </article>
+
+      <article class="step" id="c7">
+        <div class="step-head"><span class="step-no">C7</span><h3>Skip public holidays</h3><label class="done"><input type="checkbox" id="done-c7"> Done</label></div>
+        <ol class="do">
+          <li>Add <b>Filter array</b> (Data Operation). <span class="rename">Holiday check</span></li>
+          <li><b>From</b> → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Holiday check → From</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>body('Get_Leave')?['value']</pre></div>
+        <ol class="do" start="3">
+          <li>In the condition row: left box → fx → paste the formula below. Middle: <b>is equal to</b>. Right box → fx → type <code>true</code> → <b>Add</b>.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Holiday check → left box</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>and(equals(toUpper(trim(item()?['Email'])), 'ALL'), lessOrEquals(take(string(item()?['From']), 10), outputs('Report_date')), greaterOrEquals(take(string(item()?['To']), 10), outputs('Report_date')))</pre></div>
+        <div class="callout warn"><span class="t">Put true in with fx</span>Typing <code>true</code> straight into the right box makes it the word "true", not a yes/no value, and the filter never matches. This applies to every Filter array in this guide.</div>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-data)"><svg><use href="#i-filter"/></svg></span><span class="pa-title">Holiday check</span><span class="pa-kind">Filter array</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">From *</span><span class="v"><span class="tok fx">body('Get_Leave')?['value']</span></span></div>
+                <div class="fld"><span class="l">Filter Query *</span><span class="v"><span class="tok fx">and(equals(toUpper(...</span><span style="font-family:var(--f-body)">is equal to</span><span class="tok fx">true</span></span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Every Filter array in this flow has this shape: formula, "is equal to", fx true.</figcaption>
+        </figure>
+        <ol class="do" start="4">
+          <li>Add a <b>Condition</b> (Control). <span class="rename">Is it a holiday</span> Left box → fx → paste the formula below. Middle: <b>is equal to</b>. Right → fx → <code>true</code>.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Is it a holiday → left box</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>greater(length(body('Holiday_check')), 0)</pre></div>
+        <ol class="do" start="5">
+          <li>In the <b>True</b> branch, add <b>Terminate</b> (Control) with Status <b>Succeeded</b>. Leave the False branch empty.</li>
+          <li>Add all the next steps <b>below</b> the Condition box, not inside it.</li>
+        </ol>
+      </article>
+
+      <article class="step" id="c8">
+        <div class="step-head"><span class="step-no">C8</span><h3>Get the Clockify user list</h3><label class="done"><input type="checkbox" id="done-c8"> Done</label></div>
+        <p>This links each email in your Excel file to a person in Clockify.</p>
+        <ol class="do">
+          <li>Add <b>HTTP</b>. <span class="rename">Get Clockify users</span></li>
+          <li>Method <b>GET</b>. URI: paste the address below and replace <code>YOUR-WORKSPACE-ID</code> with your ID from A2.</li>
+          <li>Header: <code>X-Api-Key</code> = your API key.</li>
+          <li>Settings tab: <b>Secure inputs</b> on.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Get Clockify users → URI</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>https://api.clockify.me/api/v1/workspaces/YOUR-WORKSPACE-ID/users?page-size=500</pre></div>
+      </article>
+
+      <article class="step" id="c9">
+        <div class="step-head"><span class="step-no">C9</span><h3>Get the Clockify hours report</h3><label class="done"><input type="checkbox" id="done-c9"> Done</label></div>
+        <p>One call returns every person's hours for the report day, already totalled per person and split by project.</p>
+        <ol class="do">
+          <li>Add <b>HTTP</b>. <span class="rename">Get Clockify report</span></li>
+          <li>Method <b>POST</b>. URI: paste the address below with your Workspace ID.</li>
+          <li>Headers: <code>X-Api-Key</code> = your API key, and <code>Content-Type</code> = <code>application/json</code>.</li>
+          <li>Paste the Body below. Then delete the word <code>RANGE_START</code> (keep the quote marks), and with the cursor between the quotes click the lightning icon (dynamic content) → <b>Outputs</b> under <b>Range start</b>. Do the same for <code>RANGE_END</code> with <b>Range end</b>.</li>
+          <li>Settings tab: <b>Secure inputs</b> on.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Get Clockify report → URI</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>https://reports.api.clockify.me/v1/workspaces/YOUR-WORKSPACE-ID/reports/summary</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Get Clockify report → Body</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>{
+  "dateRangeStart": "RANGE_START",
+  "dateRangeEnd": "RANGE_END",
+  "summaryFilter": { "groups": ["USER", "PROJECT"] },
+  "exportType": "JSON",
+  "amountShown": "HIDE_AMOUNT"
+}</pre></div>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-http)"><svg><use href="#i-globe"/></svg></span><span class="pa-title">Get Clockify report</span><span class="pa-kind">HTTP</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">URI *</span><span class="v">https://reports.api.clockify.me/v1/workspaces/64f1…/reports/summary</span></div>
+                <div class="fld"><span class="l">Method *</span><span class="v plain">POST</span></div>
+                <div class="fld"><span class="l">Headers</span><span class="v">X-Api-Key │ ••••••••••<br>Content-Type │ application/json</span></div>
+                <div class="fld"><span class="l">Body</span><span class="v">{ "dateRangeStart": "<span class="tok dyn">Outputs</span>", "dateRangeEnd": "<span class="tok dyn">Outputs</span>", "summaryFilter": … }</span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>Blue tokens are picked from the dynamic content list (lightning icon); purple ones come from fx.</figcaption>
+        </figure>
+      </article>
+
+      <article class="step" id="c10">
+        <div class="step-head"><span class="step-no">C10</span><h3>Start the loop over Team Leads</h3><label class="done"><input type="checkbox" id="done-c10"> Done</label></div>
+        <ol class="do">
+          <li>Add <b>Apply to each</b> (called <b>For each</b> in newer versions; under Control). <span class="rename">For each Team Lead</span></li>
+          <li><b>Select an output from previous steps</b> → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>For each Team Lead → output</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>body('Get_Team_Leads')?['value']</pre></div>
+        <ol class="do" start="3">
+          <li><b>Inside</b> the loop, add three <b>Set variable</b> actions to start each team from zero: <code>TeamRowsHtml</code> = the same header text as in C5; <code>TeamLogged</code> = <code>0</code>; <code>TeamCapacity</code> = <code>0</code>.</li>
+          <li>Still inside, add <b>Filter array</b>. <span class="rename">Team resources</span> From → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Team resources → From</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>body('Get_Resources')?['value']</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Team resources → left box (then: is equal to, fx true)</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>equals(toLower(trim(item()?['Team Lead'])), toLower(trim(items('For_each_Team_Lead')?['Team Lead'])))</pre></div>
+        <div class="callout"><span class="t">Leave Concurrency off</span>In the loop's Settings, leave <b>Concurrency control</b> off so teams are processed one at a time. Otherwise the running totals get mixed up.</div>
+      </article>
+
+      <article class="step" id="c11">
+        <div class="step-head"><span class="step-no">C11</span><h3>Loop over each person and find their data</h3><label class="done"><input type="checkbox" id="done-c11"> Done</label></div>
+        <ol class="do">
+          <li>Inside <b>For each Team Lead</b>, below Team resources, add another <b>Apply to each</b>. <span class="rename">For each resource</span> Output → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>For each resource → output</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>body('Team_resources')</pre></div>
+        <p>Inside <b>For each resource</b>, add three <b>Filter array</b> actions. Each has a From formula and a left-box formula, then <b>is equal to</b> and fx <code>true</code>.</p>
+        <ol class="do" start="2">
+          <li><span class="rename">Find user</span> looks the email up in Clockify's user list.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Find user → From</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>body('Get_Clockify_users')</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Find user → left box</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>equals(toLower(item()?['email']), toLower(trim(items('For_each_resource')?['Email'])))</pre></div>
+        <ol class="do" start="3">
+          <li><span class="rename">Find time</span> picks that person's hours out of the report.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Find time → From</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>coalesce(body('Get_Clockify_report')?['groupOne'], json('[]'))</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Find time → left box</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>equals(item()?['_id'], first(body('Find_user'))?['id'])</pre></div>
+        <ol class="do" start="4">
+          <li><span class="rename">Find leave</span> checks the Leave table for the report date.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Find leave → From</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>body('Get_Leave')?['value']</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Find leave → left box</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>and(equals(toLower(trim(item()?['Email'])), toLower(trim(items('For_each_resource')?['Email']))), lessOrEquals(take(string(item()?['From']), 10), outputs('Report_date')), greaterOrEquals(take(string(item()?['To']), 10), outputs('Report_date')))</pre></div>
+      </article>
+
+      <article class="step" id="c12">
+        <div class="step-head"><span class="step-no">C12</span><h3>Calculate hours, capacity, utilisation and status</h3><label class="done"><input type="checkbox" id="done-c12"> Done</label></div>
+        <p>Still inside <b>For each resource</b>, add four <b>Compose</b> actions and one <b>Select</b>, in this order. Each Compose: rename it, then Inputs → fx → paste.</p>
+        <ol class="do"><li><span class="rename">Logged hours</span> converts Clockify's seconds to hours.</li></ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Logged hours → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>div(float(coalesce(first(body('Find_time'))?['duration'], 0)), 3600)</pre></div>
+        <ol class="do" start="2"><li><span class="rename">Capacity</span> uses Daily Hours, the default if blank, or 0 if on leave.</li></ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Capacity → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>if(empty(body('Find_leave')), if(empty(items('For_each_resource')?['Daily Hours']), float(outputs('Settings')?['DailyHours']), float(items('For_each_resource')?['Daily Hours'])), 0)</pre></div>
+        <ol class="do" start="3"><li><span class="rename">Utilisation</span> works out logged ÷ capacity × 100.</li></ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Utilisation → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>if(lessOrEquals(outputs('Capacity'), 0), 0, mul(div(outputs('Logged_hours'), outputs('Capacity')), 100))</pre></div>
+        <ol class="do" start="4"><li><span class="rename">Status</span> picks the label for the report.</li></ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Status → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>if(empty(body('Find_user')), '❓ Not in Clockify – check email', if(lessOrEquals(outputs('Capacity'), 0), '🌴 On leave', if(lessOrEquals(outputs('Logged_hours'), 0), '⚠️ No time logged', if(less(outputs('Utilisation'), outputs('Settings')?['UnderPct']), '🔻 Under-utilised', if(greater(outputs('Utilisation'), outputs('Settings')?['OverPct']), '🔺 Over-utilised', '✅ On track')))))</pre></div>
+        <ol class="do" start="5"><li>Add <b>Select</b> (Data Operation). <span class="rename">Project list</span> From → fx (first box). Then click the small <b>Switch Map to text mode</b> button next to Map, and paste the second formula into Map with fx.</li></ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Project list → From</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>coalesce(first(body('Find_time'))?['children'], json('[]'))</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Project list → Map (text mode)</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>concat(coalesce(item()?['name'], 'No project'), ' (', formatNumber(div(float(item()?['duration']), 3600), '0.0'), ' h)')</pre></div>
+      </article>
+
+      <article class="step" id="c13">
+        <div class="step-head"><span class="step-no">C13</span><h3>Add the person to the team's table and totals</h3><label class="done"><input type="checkbox" id="done-c13"> Done</label></div>
+        <ol class="do">
+          <li>Still inside <b>For each resource</b>, add <b>Append to string variable</b>. Name: <code>TeamRowsHtml</code>. Value → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Append to string variable → Value</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>concat('&lt;tr&gt;&lt;td&gt;', items('For_each_resource')?['Resource Name'], '&lt;/td&gt;&lt;td&gt;', if(empty(body('Project_list')), '–', join(body('Project_list'), '&lt;br&gt;')), '&lt;/td&gt;&lt;td&gt;', formatNumber(outputs('Logged_hours'), '0.0'), '&lt;/td&gt;&lt;td&gt;', formatNumber(outputs('Capacity'), '0.0'), '&lt;/td&gt;&lt;td&gt;', if(lessOrEquals(outputs('Capacity'), 0), '–', concat(formatNumber(outputs('Utilisation'), '0'), '%')), '&lt;/td&gt;&lt;td&gt;', outputs('Status'), '&lt;/td&gt;&lt;/tr&gt;')</pre></div>
+        <ol class="do" start="2">
+          <li>Add <b>Increment variable</b>. Name: <code>TeamLogged</code>. Value → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Increment TeamLogged → Value</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>outputs('Logged_hours')</pre></div>
+        <ol class="do" start="3">
+          <li>Add <b>Increment variable</b>. Name: <code>TeamCapacity</code>. Value → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Increment TeamCapacity → Value</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>outputs('Capacity')</pre></div>
+      </article>
+
+      <article class="step" id="c14">
+        <div class="step-head"><span class="step-no">C14</span><h3>Build the message and post it to the TL's channel</h3><label class="done"><input type="checkbox" id="done-c14"> Done</label></div>
+        <p>These two go <b>after</b> the For each resource loop but still <b>inside</b> For each Team Lead.</p>
+        <ol class="do">
+          <li>Add a <b>Compose</b>. <span class="rename">Message</span> Inputs → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Message → Inputs</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>concat('&lt;h2&gt;📊 Daily utilisation – ', items('For_each_Team_Lead')?['Team Lead'], '&lt;/h2&gt;&lt;p&gt;&lt;b&gt;', formatDateTime(outputs('Report_date'), 'dddd, d MMMM yyyy'), '&lt;/b&gt; · Team logged &lt;b&gt;', formatNumber(variables('TeamLogged'), '0.0'), ' h&lt;/b&gt; of ', formatNumber(variables('TeamCapacity'), '0.0'), ' h · Team utilisation &lt;b&gt;', if(greater(variables('TeamCapacity'), 0), concat(formatNumber(mul(div(variables('TeamLogged'), variables('TeamCapacity')), 100), '0'), '%'), '–'), '&lt;/b&gt;&lt;/p&gt;&lt;table&gt;', variables('TeamRowsHtml'), '&lt;/table&gt;&lt;p&gt;&lt;i&gt;Under-utilised: below ', string(outputs('Settings')?['UnderPct']), '% · Over-utilised: above ', string(outputs('Settings')?['OverPct']), '% · Source: Clockify&lt;/i&gt;&lt;/p&gt;')</pre></div>
+        <ol class="do" start="2">
+          <li>Add <b>Post message in a chat or channel</b> (Microsoft Teams). Post as: <b>Flow bot</b>. Post in: <b>Channel</b>.</li>
+          <li><b>Team</b>: open the drop-down → <b>Enter custom value</b> → fx → paste the Team ID formula.</li>
+          <li><b>Channel</b>: drop-down → <b>Enter custom value</b> → fx → paste the Channel ID formula.</li>
+          <li><b>Message</b>: lightning icon → <b>Outputs</b> under <b>Message</b>.</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Team → custom value</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>split(split(items('For_each_Team_Lead')?['Channel Link'], 'groupId=')[1], '&amp;')[0]</pre></div>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Channel → custom value</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>decodeUriComponent(split(split(items('For_each_Team_Lead')?['Channel Link'], '/channel/')[1], '/')[0])</pre></div>
+        <figure>
+          <div class="canvas">
+            <div class="pa">
+              <div class="pa-head"><span class="ico" style="--c:var(--c-teams)"><svg><use href="#i-chat"/></svg></span><span class="pa-title">Post message in a chat or channel</span><span class="pa-kind">Microsoft Teams</span></div>
+              <div class="pa-body">
+                <div class="fld"><span class="l">Post as *</span><span class="v plain">Flow bot</span></div>
+                <div class="fld"><span class="l">Post in *</span><span class="v plain">Channel</span></div>
+                <div class="fld"><span class="l">Team *</span><span class="v"><span class="tok fx">split(split(items('For_each_Te...</span></span></div>
+                <div class="fld"><span class="l">Channel *</span><span class="v"><span class="tok fx">decodeUriComponent(split(...</span></span></div>
+                <div class="fld"><span class="l">Message *</span><span class="v"><span class="tok dyn">Outputs</span></span></div>
+              </div>
+            </div>
+          </div>
+          <figcaption>The Teams action. Each Team Lead's own channel is read from the Channel Link column.</figcaption>
+        </figure>
+      </article>
+
+      <article class="step" id="c15">
+        <div class="step-head"><span class="step-no">C15</span><h3>Save and check</h3><label class="done"><input type="checkbox" id="done-c15"> Done</label></div>
+        <ol class="do">
+          <li>Click <b>Save</b>. If it refuses, the message names the action with the problem. Usually an action name doesn't match the guide, or <code>true</code> was typed rather than added with fx.</li>
+          <li>Open <b>Flow checker</b> (top bar) and fix anything it lists.</li>
+        </ol>
+      </article>
+    </section>
+
+    <!-- PART D -->
+    <section class="part" id="part-d">
+      <div class="part-head">
+        <div class="k">PART D · ABOUT 15 MINUTES</div>
+        <h2>Test safely</h2>
+        <p>Every channel link still points to your test channel, so nothing reaches the Team Leads yet.</p>
+      </div>
+      <article class="step" id="d1">
+        <div class="step-head"><span class="step-no">D1</span><h3>Run it once by hand</h3><label class="done"><input type="checkbox" id="done-d1"> Done</label></div>
+        <ol class="do">
+          <li><b>Test</b> → <b>Manually</b> → <b>Test</b>. The flow runs straight away, whatever the schedule.</li>
+          <li>Watch each step get a green tick. Click any step to see what went in and what came out.</li>
+          <li>Open your test channel: there should be one post per Team Lead.</li>
+        </ol>
+      </article>
+      <article class="step" id="d2">
+        <div class="step-head"><span class="step-no">D2</span><h3>Check the numbers against Clockify</h3><label class="done"><input type="checkbox" id="done-d2"> Done</label></div>
+        <ol class="do">
+          <li>In Clockify, open <b>Reports</b> → <b>Summary</b>, pick the report date, and group by <b>User</b> then <b>Project</b>.</li>
+          <li>Compare three or four people with the Teams post. Hours should match to 0.1 h.</li>
+        </ol>
+        <div class="callout"><span class="t">If they don't match</span><b>Everyone off by a few hours:</b> TimeZone in Settings is wrong. <b>Someone shows ❓:</b> their Email in Excel differs from Clockify. <b>Someone has 0 h but logged time:</b> they may have logged it after 9:00; the report counts what was there at run time.</div>
+        <p style="font-size:15px;color:var(--muted)">Each test run uses 2 Clockify API calls. Clockify's free plan allows 30 per hour, so you can test freely.</p>
+      </article>
+    </section>
+
+    <!-- PART E -->
+    <section class="part" id="part-e">
+      <div class="part-head">
+        <div class="k">PART E · 10 MINUTES</div>
+        <h2>Go live</h2>
+      </div>
+      <article class="step" id="e1">
+        <div class="step-head"><span class="step-no">E1</span><h3>Switch to the real channels</h3><label class="done"><input type="checkbox" id="done-e1"> Done</label></div>
+        <ol class="do">
+          <li>In the Excel TeamLeads table, replace the test link with each TL's real channel link.</li>
+          <li>On both Clockify HTTP actions, switch on <b>Secure outputs</b> as well. People's hours then stay hidden in run history.</li>
+          <li>Let the Team Leads know a daily post from <b>Workflows</b> will start appearing.</li>
+          <li>Next morning, check <b>My flows</b> → Daily Utilisation Report → <b>Run history</b> shows <b>Succeeded</b>.</li>
+        </ol>
+        <div class="callout key"><span class="t">Data security</span>The data goes from Clockify straight into your company's Microsoft 365 and on to Teams. Each TL only sees their own channel, so check each channel's membership matches the team. Keep the flow's owners to a minimum, because owners can see the API key.</div>
+      </article>
+    </section>
+
+    <!-- PART F -->
+    <section class="part" id="part-f">
+      <div class="part-head">
+        <div class="k">PART F · EVERYDAY CHANGES</div>
+        <h2>Everything else happens in Excel</h2>
+        <p>Once it's live, you don't need to open the flow for normal changes. The next morning's run picks up whatever is in the file.</p>
+      </div>
+      <div class="tbl-wrap"><table class="plain">
+        <tr><th>I want to…</th><th>Do this</th></tr>
+        <tr><td>Add a new joiner</td><td>Add a row to <b>Resources</b>.</td></tr>
+        <tr><td>Remove a leaver</td><td>Delete their row in <b>Resources</b>.</td></tr>
+        <tr><td>Move someone to another TL</td><td>Change their <b>Team Lead</b> cell.</td></tr>
+        <tr><td>Add a new Team Lead</td><td>Add a row to <b>TeamLeads</b> with their channel link, then assign people to them in Resources.</td></tr>
+        <tr><td>Record leave</td><td>Add a row to <b>Leave</b>.</td></tr>
+        <tr><td>Skip a public holiday</td><td>Add a row to <b>Leave</b> with <b>ALL</b> as the email.</td></tr>
+        <tr><td>Set a part-time capacity</td><td>Change their <b>Daily Hours</b>.</td></tr>
+        <tr><td>Change the 80% / 110% limits</td><td>Edit the <b>Settings</b> step in the flow (C2).</td></tr>
+        <tr><td>Change the run time</td><td>Edit the <b>Recurrence</b> trigger (C1).</td></tr>
+        <tr><td>Pause the reports</td><td>My flows → Daily Utilisation Report → <b>Turn off</b>.</td></tr>
+      </table></div>
+    </section>
+
+    <!-- EXTRAS -->
+    <section class="part" id="extras">
+      <div class="part-head">
+        <div class="k">OPTIONAL ADD-ONS</div>
+        <h2>Extras once the basics work</h2>
+        <p>Add these one at a time, after the main flow has run successfully for a few days.</p>
+      </div>
+
+      <article class="step" id="x1">
+        <div class="step-head"><span class="step-no">+1</span><h3>A PMO summary for you</h3><label class="done"><input type="checkbox" id="done-x1"> Done</label></div>
+        <p>One message to you each morning, with a line per Team Lead.</p>
+        <ol class="do">
+          <li>With the other variables (C5), add <b>Initialize variable</b>: Name <code>SummaryRowsHtml</code>, Type String, Value:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>SummaryRowsHtml → Value</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>&lt;tr&gt;&lt;th&gt;Team Lead&lt;/th&gt;&lt;th&gt;Logged (h)&lt;/th&gt;&lt;th&gt;Capacity (h)&lt;/th&gt;&lt;th&gt;Utilisation&lt;/th&gt;&lt;/tr&gt;</pre></div>
+        <ol class="do" start="2">
+          <li>Inside <b>For each Team Lead</b>, after the Teams post, add <b>Append to string variable</b> → <code>SummaryRowsHtml</code> → Value fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Append to SummaryRowsHtml → Value</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>concat('&lt;tr&gt;&lt;td&gt;', items('For_each_Team_Lead')?['Team Lead'], '&lt;/td&gt;&lt;td&gt;', formatNumber(variables('TeamLogged'), '0.0'), '&lt;/td&gt;&lt;td&gt;', formatNumber(variables('TeamCapacity'), '0.0'), '&lt;/td&gt;&lt;td&gt;', if(greater(variables('TeamCapacity'), 0), concat(formatNumber(mul(div(variables('TeamLogged'), variables('TeamCapacity')), 100), '0'), '%'), '–'), '&lt;/td&gt;&lt;/tr&gt;')</pre></div>
+        <ol class="do" start="3">
+          <li>Below the loop (outside it), add <b>Post message in a chat or channel</b>: Post as <b>Flow bot</b>, Post in <b>Chat with Flow bot</b>, Recipient = your email, Message → fx:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>PMO summary → Message</b><span class="mode fx">paste with fx</span></span><button class="copy" type="button">Copy</button></div><pre>concat('&lt;h2&gt;📋 Utilisation summary – ', formatDateTime(outputs('Report_date'), 'dddd, d MMMM yyyy'), '&lt;/h2&gt;&lt;table&gt;', variables('SummaryRowsHtml'), '&lt;/table&gt;')</pre></div>
+      </article>
+
+      <article class="step" id="x2">
+        <div class="step-head"><span class="step-no">+2</span><h3>A history log for trends and capacity planning</h3><label class="done"><input type="checkbox" id="done-x2"> Done</label></div>
+        <p>Saves every person's daily figures to the <b>History</b> table, so you can build weekly or monthly PivotTables, or connect Power BI later.</p>
+        <ol class="do">
+          <li>Inside <b>For each resource</b>, after the two Increment steps, add <b>Add a row into a table</b> (Excel Online (Business)) → your file → Table <b>History</b>.</li>
+          <li>The table's columns appear as fields. Fill each with fx, using the formulas below.</li>
+          <li>The template's History table starts with one empty row. Delete it after the first entries arrive.</li>
+        </ol>
+        <div class="tbl-wrap"><table class="plain">
+          <tr><th>Field</th><th>fx formula</th></tr>
+          <tr><td>Date</td><td><code>outputs('Report_date')</code></td></tr>
+          <tr><td>Team Lead</td><td><code>items('For_each_Team_Lead')?['Team Lead']</code></td></tr>
+          <tr><td>Resource</td><td><code>items('For_each_resource')?['Resource Name']</code></td></tr>
+          <tr><td>Projects</td><td><code>join(body('Project_list'), ', ')</code></td></tr>
+          <tr><td>Logged (h)</td><td><code>formatNumber(outputs('Logged_hours'), '0.0')</code></td></tr>
+          <tr><td>Capacity (h)</td><td><code>formatNumber(outputs('Capacity'), '0.0')</code></td></tr>
+          <tr><td>Utilisation %</td><td><code>formatNumber(outputs('Utilisation'), '0')</code></td></tr>
+          <tr><td>Status</td><td><code>outputs('Status')</code></td></tr>
+        </table></div>
+      </article>
+
+      <article class="step" id="x3">
+        <div class="step-head"><span class="step-no">+3</span><h3>An alert if a run fails</h3><label class="done"><input type="checkbox" id="done-x3"> Done</label></div>
+        <ol class="do">
+          <li>At the very bottom of the flow, add <b>Post message in a chat or channel</b>: Flow bot → Chat with Flow bot → Recipient = your email. Message:</li>
+        </ol>
+        <div class="code"><div class="code-head"><span class="lbl"><b>Alert → Message</b><span class="mode txt">type or paste as text</span></span><button class="copy" type="button">Copy</button></div><pre>⚠️ Today's utilisation report did not finish. Open Power Automate → My flows → Daily Utilisation Report → Run history to see which step failed.</pre></div>
+        <ol class="do" start="2">
+          <li>Open this action's <b>Settings</b> → <b>Run after</b>. For the action directly above it, tick <b>has failed</b>, <b>is skipped</b> and <b>has timed out</b>, and untick <b>is successful</b>.</li>
+        </ol>
+        <p style="font-size:15px;color:var(--muted)">Now you only hear from it when something went wrong, such as an expired API key or a renamed Excel table.</p>
+      </article>
+    </section>
+
+    <!-- TROUBLESHOOTING -->
+    <section class="part" id="trouble">
+      <div class="part-head">
+        <div class="k">TROUBLESHOOTING</div>
+        <h2>When a step turns red</h2>
+        <p>Open the failed run, click the red step and read its output. Most problems are one of these.</p>
+      </div>
+      <div class="tbl-wrap"><table class="plain">
+        <tr><th>What you see</th><th>What it means and how to fix it</th></tr>
+        <tr><td>HTTP 401</td><td>The API key is wrong or was regenerated. Paste the current key into both HTTP actions.</td></tr>
+        <tr><td>HTTP 403</td><td>Your Clockify role can't see other people's time. Ask the Clockify owner to make you an Admin.</td></tr>
+        <tr><td>HTTP 404</td><td>The Workspace ID in the URI is wrong. Copy it again (A2).</td></tr>
+        <tr><td>HTTP 429</td><td>Too many Clockify calls in an hour (free plan limit: 30). Wait an hour and run again.</td></tr>
+        <tr><td>"Data policy" or "DLP" error when saving</td><td>Your company's Power Automate rules don't allow HTTP together with Excel or Teams. Ask IT to allow it for this flow.</td></tr>
+        <tr><td>Excel: table not found</td><td>A table was renamed. In Excel: click inside the table → Table Design → Table Name, and set it back.</td></tr>
+        <tr><td>Error mentioning 'Daily Hours', 'Team Lead' or 'Email'</td><td>A column heading in Excel was changed. Put the exact heading back.</td></tr>
+        <tr><td>Everyone shows ❓ Not in Clockify</td><td>Open the Get Clockify users output. If it's empty, check the Workspace ID. If the emails there differ from Excel, fix Excel. If your workspace has more than 500 members, ask for help adding a second page.</td></tr>
+        <tr><td>A TL got an empty table</td><td>Their name in TeamLeads doesn't match the Team Lead column in Resources (check spelling and extra spaces).</td></tr>
+        <tr><td>Teams step fails: channel not found</td><td>The Channel Link isn't a channel link (perhaps a message link), or the channel is private. For private channels, change <b>Post as</b> to <b>User</b>.</td></tr>
+        <tr><td>Flow didn't run at all</td><td>It was turned off, or the trial ended (see below). Check My flows.</td></tr>
+      </table></div>
+    </section>
+
+    <!-- TRIAL -->
+    <section class="part" id="trial">
+      <div class="part-head">
+        <div class="k">BEFORE DAY 90</div>
+        <h2>Before the trial ends</h2>
+      </div>
+      <div class="two">
+        <div class="mini">
+          <h4>What happens at day 90</h4>
+          <p>The HTTP action is a Premium feature, so the flow stops working when the trial ends unless the flow owner has a licence.</p>
+        </div>
+        <div class="mini">
+          <h4>What to buy</h4>
+          <p>One <b>Power Automate Premium</b> licence, for the flow owner only. Team Leads reading the posts need nothing. Ask IT first: the company may already have spare Premium licences.</p>
+        </div>
+        <div class="mini">
+          <h4>Add a co-owner</h4>
+          <p>Flow → <b>Share</b> → add one trusted colleague as co-owner, so someone else can fix it when you're away.</p>
+        </div>
+        <div class="mini">
+          <h4>Mark your calendar</h4>
+          <p>Set a reminder for day 75 to sort out the licence, so the TLs never miss a morning.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>Built for the PMO's daily resource-utilisation reporting. The pictures are illustrations of Power Automate, Excel and Teams screens, not screenshots.</footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  // Copy buttons
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var pre = btn.closest('.code').querySelector('pre');
+      var text = pre.textContent;
+      var done = function () {
+        btn.textContent = 'Copied';
+        btn.classList.add('ok');
+        setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('ok'); }, 1600);
+      };
+      var fallback = function () {
+        var range = document.createRange();
+        range.selectNodeContents(pre);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        btn.textContent = 'Selected – press Ctrl+C';
+      };
+      try {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } catch (e) { fallback(); }
+    });
+  });
+
+  // Step ticks, remembered in this browser only
+  var KEY = 'utilisation-guide-done';
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { saved = {}; }
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.done input'));
+  var bar = document.getElementById('pbar');
+  var ptext = document.getElementById('ptext');
+  function render() {
+    var n = 0;
+    boxes.forEach(function (b) {
+      b.closest('.step').classList.toggle('is-done', b.checked);
+      if (b.checked) n++;
+    });
+    bar.style.width = (boxes.length ? (n / boxes.length) * 100 : 0) + '%';
+    ptext.textContent = n + ' of ' + boxes.length + ' steps ticked';
+  }
+  boxes.forEach(function (b) {
+    b.checked = !!saved[b.id];
+    b.addEventListener('change', function () {
+      saved[b.id] = b.checked;
+      try { localStorage.setItem(KEY, JSON.stringify(saved)); } catch (e) {}
+      render();
+    });
+  });
+  render();
+})();
+</script>
